@@ -1,25 +1,84 @@
 # eclipselink-logsep
 
-Patched EclipseLink 2.7.14 jar.
+Patched EclipseLink 2.7.14 jar with custom SQL bind parameter separator.
 
-## Base
+## Base Artifact
 
-Original artifact:
+Original dependency:
 
-`org.eclipse.persistence:eclipselink:2.7.14`
+```xml
+<dependency>
+    <groupId>org.eclipse.persistence</groupId>
+    <artifactId>eclipselink</artifactId>
+    <version>2.7.14</version>
+</dependency>
+```
 
-## Custom change
+## Fork Version
 
-Changed SQL bind parameter logging in:
+`2.7.14-fork2`
 
-`org.eclipse.persistence.internal.databaseaccess.DatabaseCall.appendLogParameters(...)`
+## Custom Changes
 
-Bind parameters are separated with `\u07aa` instead of comma/space to simplify log parsing.
+Modified class:
 
-## Version
+```text
+org.eclipse.persistence.internal.databaseaccess.DatabaseCall
+```
 
-`2.7.14-fork1`
+Modified method:
 
-## Usage
+```text
+appendLogParameters(...)
+```
 
-Intended for use via JitPack.
+### Change
+
+Bind parameters in EclipseLink SQL logs are separated using:
+
+```text
+\u07aa
+```
+
+instead of the default:
+
+```text
+", "
+```
+
+### Reason
+
+The default comma separator makes automated log parsing difficult because commas may also appear inside text values.
+
+Using a dedicated separator simplifies reliable parsing of SQL bind parameters in log output.
+
+## Patch Documentation
+
+The source modification is documented in:
+
+```text
+patches/DatabaseCall.patch
+```
+
+## Maven / JitPack
+
+Repository:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+Dependency:
+
+```xml
+<dependency>
+    <groupId>com.github.HannesSchmidt1337</groupId>
+    <artifactId>eclipselink-logsep</artifactId>
+    <version>v2.7.14-fork2</version>
+</dependency>
+```
